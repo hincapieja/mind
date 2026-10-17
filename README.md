@@ -1,0 +1,2 @@
+# mind
+Game mine
