@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100 select-none">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MIND">
+  <title>MIND - Entrenador Cerebral</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphism & Modern Styling */
+    .glass-card {
+      background: rgba(30, 41, 59, 0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .glass-card-active {
+      background: rgba(49, 46, 129, 0.4);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(129, 140, 248, 0.3);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+    }
+
+    .glass-btn {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-btn:active {
+      transform: scale(0.96);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .bg-glow-purple {
+      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.2) 0%, rgba(15, 23, 42, 0) 70%);
+    }
+
+    /* Animated gradient text */
+    .text-gradient {
+      background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 99px;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; filter: drop-shadow(0 0 15px rgba(99,102,241,0.5)); }
+      50% { opacity: 0.8; filter: drop-shadow(0 0 25px rgba(168,85,247,0.7)); }
+    }
+    .animate-glow {
+      animation: pulseGlow 4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col justify-between max-w-md mx-auto bg-slate-950 text-slate-100 border-x border-slate-900 shadow-2xl relative overflow-hidden bg-glow-purple">
+
+  <!-- TOP HEADER -->
+  <header class="p-4 flex items-center justify-between border-b border-slate-800/60 bg-slate-950/70 backdrop-blur-xl z-20 sticky top-0">
+    <div class="flex items-center space-x-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-indigo-500/30">
+        M
+      </div>
+      <div>
+        <h1 class="font-extrabold text-lg tracking-wider text-gradient leading-none">MIND</h1>
+        <span class="text-[9px] text-slate-400 font-semibold tracking-widest uppercase">Brain Trainer</span>
+      </div>
+    </div>
+    
+    <!-- Badges -->
+    <div class="flex items-center space-x-2 text-xs font-semibold">
+      <div class="flex items-center space-x-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-full backdrop-blur-md">
+        <i class="fa-solid fa-fire text-amber-500"></i>
+        <span id="streak-counter">0 días</span>
+      </div>
+      <div class="flex items-center space-x-1.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 px-3 py-1 rounded-full backdrop-blur-md">
+        <i class="fa-solid fa-bolt text-indigo-400"></i>
+        <span id="global-level-badge">Niv 1</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main id="app-container" class="flex-1 overflow-y-auto p-4 flex flex-col z-10">
+    <!-- Injected dynamically -->
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-xl p-2.5 grid grid-cols-4 gap-1 z-20">
+    <button onclick="router.navigate('home')" id="nav-home" class="flex flex-col items-center py-1.5 px-1 text-indigo-400 rounded-2xl transition">
+      <i class="fa-solid fa-house text-lg mb-0.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide">Rutina</span>
+    </button>
+    <button onclick="router.navigate('practice')" id="nav-practice" class="flex flex-col items-center py-1.5 px-1 text-slate-400 hover:text-slate-200 rounded-2xl transition">
+      <i class="fa-solid fa-shapes text-lg mb-0.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide">Módulos</span>
+    </button>
+    <button onclick="router.navigate('stats')" id="nav-stats" class="flex flex-col items-center py-1.5 px-1 text-slate-400 hover:text-slate-200 rounded-2xl transition">
+      <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide">Progreso</span>
+    </button>
+    <button onclick="router.navigate('share')" id="nav-share" class="flex flex-col items-center py-1.5 px-1 text-slate-400 hover:text-slate-200 rounded-2xl transition">
+      <i class="fa-solid fa-share-nodes text-lg mb-0.5"></i>
+      <span class="text-[10px] font-semibold tracking-wide">App / Nube</span>
+    </button>
+  </nav>
+
+  <!-- MODAL FOR RESULTS -->
+  <div id="modal-overlay" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl hidden items-center justify-center p-4 z-50">
+    <div class="glass-card rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl transform transition-all scale-95 opacity-0 border border-indigo-500/20" id="modal-card">
+      <div id="modal-icon" class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center text-3xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 shadow-lg shadow-indigo-500/20">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h3 id="modal-title" class="text-2xl font-black text-white mb-1">¡Buen Trabajo!</h3>
+      <p id="modal-subtitle" class="text-xs text-slate-400 mb-6">Módulo neurocognitivo completado</p>
+      
+      <div class="bg-slate-900/60 rounded-2xl p-4 mb-6 grid grid-cols-2 gap-4 border border-slate-800">
+        <div>
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Puntuación</span>
+          <span id="modal-score" class="text-2xl font-black text-indigo-400">0</span>
+        </div>
+        <div>
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Precisión</span>
+          <span id="modal-accuracy" class="text-2xl font-black text-emerald-400">0%</span>
+        </div>
+      </div>
+
+      <button id="modal-btn" class="w-full py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white font-bold rounded-2xl transition shadow-lg shadow-indigo-600/30 active:scale-95">
+        Continuar
+      </button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    /* ==========================================================================
+       PWA INSTALLATION & WEB MANIFEST SETUP
+       ========================================================================== */
+    const manifest = {
+      name: "MIND - Entrenador Cerebral",
+      short_name: "MIND",
+      start_url: "./",
+      display: "standalone",
+      background_color: "#020617",
+      theme_color: "#0f172a",
+      icons: [{
+        src: "https://cdn-icons-png.flaticon.com/512/2040/2040946.png",
+        sizes: "512x512",
+        type: "image/png"
+      }]
+    };
+    const stringManifest = JSON.stringify(manifest);
+    const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blobManifest);
+    const linkEl = document.createElement('link');
+    linkEl.rel = 'manifest';
+    linkEl.href = manifestURL;
+    document.head.appendChild(linkEl);
+
+    // Register Inline Service Worker
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
+        self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+        self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));
+      `;
+      const blobSW = new Blob([swCode], { type: 'text/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(blobSW)).catch(() => {});
+    }
+
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    /* ==========================================================================
+       GLOBAL STATE & PERSISTENCE
+       ========================================================================== */
+    const STORAGE_KEY = 'mind_brain_trainer_db_v2';
+
+    const ALL_SKILLS = [
+      { id: 'coordination', name: 'Coordinación', desc: 'Reacción ágil a colores y formas', icon: 'fa-hand-pointer', color: 'text-amber-400', bg: 'bg-amber-400/10' },
+      { id: 'logic', name: 'Razonamiento', desc: 'Secuencias lógicas de patrones', icon: 'fa-puzzle-piece', color: 'text-sky-400', bg: 'bg-sky-400/10' },
+      { id: 'arithmetic', name: 'Aritmética', desc: 'Cálculo mental bajo presión', icon: 'fa-calculator', color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+      { id: 'language', name: 'Lenguaje', desc: 'Anagramas y agilidad léxica', icon: 'fa-font', color: 'text-purple-400', bg: 'bg-purple-400/10' },
+      { id: 'memory', name: 'Memoria Visual', desc: 'Secuencia patrones espaciales', icon: 'fa-brain', color: 'text-rose-400', bg: 'bg-rose-400/10' },
+      { id: 'divided_attention', name: 'Atención Dividida', desc: 'Multitarea: balance y preguntas', icon: 'fa-layer-group', color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
+      { id: 'spatial', name: 'Percepción Espacial', desc: 'Conteo y rotación de objetos 3D', icon: 'fa-cube', color: 'text-cyan-400', bg: 'bg-cyan-400/10' },
+      { id: 'stroop', name: 'Inhibición / Stroop', desc: 'Frena impulsos (Texto vs Color)', icon: 'fa-eye', color: 'text-orange-400', bg: 'bg-orange-400/10' },
+      { id: 'processing_speed', name: 'Velocidad de Procesos', desc: 'Encuentra figuras repetidas', icon: 'fa-bolt', color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
+      { id: 'working_memory', name: 'Memoria de Trabajo', desc: 'Retención y orden inverso', icon: 'fa-arrow-down-short-wide', color: 'text-fuchsia-400', bg: 'bg-fuchsia-400/10' },
+      { id: 'flexibility', name: 'Flexibilidad Cognitive', desc: 'Switching rápido entre reglas', icon: 'fa-repeat', color: 'text-teal-400', bg: 'bg-teal-400/10' }
+    ];
+
+    const defaultState = {
+      level: 1,
+      xp: 0,
+      streak: 0,
+      lastCompletedDate: null,
+      dailyCompletedToday: false,
+      dailyProgress: 0,
+      dailySeed: new Date().toISOString().slice(0, 10),
+      dailySchedule: [],
+      stats: ALL_SKILLS.reduce((acc, s) => {
+        acc[s.id] = { score: 0, played: 0 };
+        return acc;
+      }, {})
+    };
+
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateHeaderBadges();
+    }
+
+    function generateDailySchedule() {
+      // Deterministic selection of 5 skills based on date string
+      const seedStr = state.dailySeed;
+      let hash = 0;
+      for (let i = 0; i < seedStr.length; i++) {
+        hash = seedStr.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      
+      const shuffled = [...ALL_SKILLS].sort((a, b) => {
+        const valA = Math.sin(hash + a.id.length) * 10000;
+        const valB = Math.sin(hash + b.id.length) * 10000;
+        return (valA - Math.floor(valA)) - (valB - Math.floor(valB));
+      });
+
+      return shuffled.slice(0, 5).map(s => s.id);
+    }
+
+    function checkDailyReset() {
+      const today = new Date().toISOString().slice(0, 10);
+      if (state.dailySeed !== today || !state.dailySchedule || state.dailySchedule.length === 0) {
+        state.dailySeed = today;
+        state.dailyCompletedToday = false;
+        state.dailyProgress = 0;
+        state.dailySchedule = generateDailySchedule();
+        
+        if (state.lastCompletedDate) {
+          const last = new Date(state.lastCompletedDate);
+          const now = new Date(today);
+          const diffDays = Math.round((now - last) / (1000 * 60 * 60 * 24));
+          if (diffDays > 1) state.streak = 0;
+        }
+        saveState();
+      }
+    }
+
+    function updateHeaderBadges() {
+      document.getElementById('streak-counter').innerText = `${state.streak} ${state.streak === 1 ? 'día' : 'días'}`;
+      document.getElementById('global-level-badge').innerText = `Niv ${state.level}`;
+    }
+
+    /* ==========================================================================
+       ROUTER & NAVIGATION SYSTEM
+       ========================================================================== */
+    const router = {
+      currentView: 'home',
+      activeGame: null,
+
+      navigate(view, params = {}) {
+        this.currentView = view;
+        this.updateNavUI(view);
+        const container = document.getElementById('app-container');
+        container.innerHTML = '';
+
+        if (this.activeGame && this.activeGame.cleanup) {
+          this.activeGame.cleanup();
+          this.activeGame = null;
+        }
+
+        switch (view) {
+          case 'home':
+            renderHome(container);
+            break;
+          case 'practice':
+            renderPracticeMenu(container);
+            break;
+          case 'stats':
+            renderStats(container);
+            break;
+          case 'share':
+            renderShareMenu(container);
+            break;
+          case 'game':
+            renderGameContainer(container, params.skill, params.isDaily);
+            break;
+        }
+      },
+
+      updateNavUI(active) {
+        ['home', 'practice', 'stats', 'share'].forEach(item => {
+          const el = document.getElementById(`nav-${item}`);
+          if (!el) return;
+          if (item === active) {
+            el.className = "flex flex-col items-center py-1.5 px-1 text-indigo-400 rounded-2xl transition";
+          } else {
+            el.className = "flex flex-col items-center py-1.5 px-1 text-slate-400 hover:text-slate-200 rounded-2xl transition";
+          }
+        });
+      }
+    };
+
+    /* ==========================================================================
+       MODAL RESULTS SYSTEM
+       ========================================================================== */
+    function showResultsModal(score, accuracy, onContinue) {
+      const overlay = document.getElementById('modal-overlay');
+      const card = document.getElementById('modal-card');
+      
+      document.getElementById('modal-score').innerText = score;
+      document.getElementById('modal-accuracy').innerText = `${Math.round(accuracy)}%`;
+
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+      setTimeout(() => {
+        card.classList.remove('scale-95', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+      }, 10);
+
+      const btn = document.getElementById('modal-btn');
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener('click', () => {
+        card.classList.remove('scale-100', 'opacity-100');
+        card.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          overlay.classList.remove('flex');
+          overlay.classList.add('hidden');
+          if (onContinue) onContinue();
+        }, 200);
+      });
+    }
+
+    /* ==========================================================================
+       VIEW: HOME (RUTINA DIARIA)
+       ========================================================================== */
+    function renderHome(container) {
+      const schedule = state.dailySchedule;
+      const isCompleted = state.dailyCompletedToday;
+
+      let html = `
+        <div class="flex-1 flex flex-col justify-between py-1">
+          <!-- Hero Banner -->
+          <div class="glass-card p-6 rounded-3xl relative overflow-hidden border border-indigo-500/20">
+            <div class="absolute -right-8 -bottom-8 w-36 h-36 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full blur-2xl"></div>
+            <span class="text-[10px] font-extrabold tracking-widest uppercase text-indigo-400 block mb-1">Entrenamiento Diario</span>
+            <h2 class="text-2xl font-black text-white mb-2">Rutina Personalizada</h2>
+            <p class="text-xs text-slate-400 leading-relaxed mb-4">5 ejercicios seleccionados para potenciar tus habilidades neurocognitivas hoy.</p>
+            
+            <!-- Progress Bar -->
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-300 mb-2">
+              <span>Progreso de hoy</span>
+              <span class="text-indigo-400">${state.dailyProgress} de 5</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-900/80 rounded-full overflow-hidden p-0.5 border border-slate-800">
+              <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500" style="width: ${(state.dailyProgress / 5) * 100}%"></div>
+            </div>
+          </div>
+
+          <!-- Daily Modules List -->
+          <div class="my-5 space-y-2.5">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest px-1">Módulos de hoy</h3>
+      `;
+
+      schedule.forEach((skillId, index) => {
+        const skill = ALL_SKILLS.find(s => s.id === skillId);
+        let statusIcon = '<i class="fa-solid fa-lock text-slate-600"></i>';
+        let cardStyle = 'opacity-50 glass-card';
+
+        if (index < state.dailyProgress || isCompleted) {
+          statusIcon = '<i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>';
+          cardStyle = 'glass-card border-emerald-500/30 text-slate-200';
+        } else if (index === state.dailyProgress) {
+          statusIcon = '<i class="fa-solid fa-play text-indigo-400 animate-pulse text-lg"></i>';
+          cardStyle = 'glass-card-active text-white shadow-xl';
+        }
+
+        html += `
+          <div class="flex items-center justify-between p-3.5 rounded-2xl ${cardStyle} transition">
+            <div class="flex items-center space-x-3.5">
+              <div class="w-10 h-10 rounded-xl ${skill.bg} ${skill.color} flex items-center justify-center text-lg border border-white/10 shrink-0">
+                <i class="fa-solid ${skill.icon}"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-bold">${skill.name}</h4>
+                <p class="text-[10px] text-slate-400">${skill.desc}</p>
+              </div>
+            </div>
+            <div class="pr-1">
+              ${statusIcon}
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+
+          <!-- Bottom CTA -->
+          <div class="mt-auto">
+      `;
+
+      if (isCompleted) {
+        html += `
+          <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-4 rounded-2xl text-center backdrop-blur-md">
+            <i class="fa-solid fa-circle-check text-3xl mb-1"></i>
+            <h4 class="font-bold text-sm">¡Rutina diaria completada!</h4>
+            <p class="text-[11px] text-emerald-300/80 mt-0.5">Vuelve mañana para continuar con tu racha mental.</p>
+          </div>
+        `;
+      } else {
+        const nextSkillId = schedule[state.dailyProgress];
+        html += `
+          <button onclick="router.navigate('game', { skill: '${nextSkillId}', isDaily: true })" class="w-full py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 active:scale-[0.98] text-white font-bold rounded-2xl shadow-xl shadow-indigo-600/30 flex items-center justify-center space-x-2 transition">
+            <span class="text-sm">${state.dailyProgress === 0 ? 'Comenzar Rutina' : 'Siguiente Ejercicio'}</span>
+            <i class="fa-solid fa-arrow-right text-sm"></i>
+          </button>
+        `;
+      }
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /* ==========================================================================
+       VIEW: PRACTICE MENU (11 SKILLS)
+       ========================================================================== */
+    function renderPracticeMenu(container) {
+      let html = `
+        <div class="flex-1 flex flex-col py-1 space-y-3">
+          <div>
+            <h2 class="text-xl font-black text-white mb-0.5">Entrenamiento Libre</h2>
+            <p class="text-xs text-slate-400">Practica los 11 módulos ilimitadamente.</p>
+          </div>
+          
+          <div class="space-y-2.5 flex-1 overflow-y-auto pr-1">
+      `;
+
+      ALL_SKILLS.forEach(s => {
+        const stats = state.stats[s.id] || { score: 0, played: 0 };
+        html += `
+          <div onclick="router.navigate('game', { skill: '${s.id}', isDaily: false })" class="glass-card hover:border-indigo-500/40 rounded-2xl p-3.5 flex items-center justify-between cursor-pointer transition active:scale-[0.98]">
+            <div class="flex items-center space-x-3.5">
+              <div class="w-11 h-11 rounded-2xl ${s.bg} ${s.color} flex items-center justify-center text-xl shrink-0 border border-white/10">
+                <i class="fa-solid ${s.icon}"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-slate-100">${s.name}</h3>
+                <p class="text-[11px] text-slate-400 line-clamp-1 mb-1">${s.desc}</p>
+                <div class="flex items-center space-x-3 text-[10px] text-slate-500 font-medium">
+                  <span>Pts Máx: <strong class="text-indigo-300">${stats.score}</strong></span>
+                  <span>Partidas: <strong class="text-slate-300">${stats.played}</strong></span>
+                </div>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-xs text-slate-600 ml-2"></i>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /* ==========================================================================
+       VIEW: STATS & PROGRESS
+       ========================================================================== */
+    function renderStats(container) {
+      let totalGames = 0;
+      let totalScore = 0;
+      ALL_SKILLS.forEach(s => {
+        const stat = state.stats[s.id] || { score: 0, played: 0 };
+        totalGames += stat.played;
+        totalScore += stat.score;
+      });
+
+      let html = `
+        <div class="flex-1 flex flex-col py-1 space-y-4">
+          <div>
+            <h2 class="text-xl font-black text-white mb-0.5">Progreso y Estadísticas</h2>
+            <p class="text-xs text-slate-400">Análisis del rendimiento neurológico.</p>
+          </div>
+
+          <!-- Overview Cards -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="glass-card rounded-2xl p-4 text-center">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Racha Actual</span>
+              <div class="text-2xl font-black text-amber-400 flex items-center justify-center space-x-1">
+                <i class="fa-solid fa-fire text-xl"></i>
+                <span>${state.streak}</span>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-4 text-center">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Puntuación Total</span>
+              <div class="text-2xl font-black text-indigo-400 flex items-center justify-center space-x-1">
+                <i class="fa-solid fa-trophy text-lg"></i>
+                <span>${totalScore}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skills Breakdown -->
+          <div class="glass-card rounded-2xl p-4 space-y-3.5 flex-1 overflow-y-auto">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Puntuación Máxima por Habilidad</h3>
+      `;
+
+      const maxScoreEver = Math.max(...ALL_SKILLS.map(s => (state.stats[s.id] || {}).score || 0), 100);
+
+      ALL_SKILLS.forEach(s => {
+        const score = (state.stats[s.id] || {}).score || 0;
+        const pct = Math.min(100, Math.round((score / maxScoreEver) * 100));
+
+        html += `
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-semibold text-slate-200 flex items-center space-x-2">
+                <i class="fa-solid ${s.icon} text-[10px] ${s.color}"></i>
+                <span>${s.name}</span>
+              </span>
+              <span class="font-bold text-slate-300">${score} pts</span>
+            </div>
+            <div class="w-full h-2 bg-slate-900/80 rounded-full overflow-hidden p-0.5 border border-slate-800">
+              <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    /* ==========================================================================
+       VIEW: SHARE / PWA / SAVE DATA
+       ========================================================================== */
+    function renderShareMenu(container) {
+      container.innerHTML = `
+        <div class="flex-1 flex flex-col py-1 space-y-4">
+          <div>
+            <h2 class="text-xl font-black text-white mb-0.5">Compartir / Instalar</h2>
+            <p class="text-xs text-slate-400">Guarda en el escritorio o comparte tus logros.</p>
+          </div>
+
+          <!-- Install PWA Card -->
+          <div class="glass-card p-5 rounded-2xl border border-indigo-500/20 space-y-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Instalar como App Móvil</h3>
+                <p class="text-[11px] text-slate-400">Acceso directo en inicio sin navegador.</p>
+              </div>
+            </div>
+            <button onclick="installPWA()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-indigo-600/30">
+              Agregar a la Pantalla de Inicio
+            </button>
+            <p class="text-[10px] text-slate-500 text-center">En iOS (Safari): Toca "Compartir" <i class="fa-solid fa-arrow-up-from-bracket"></i> y luego "Agregar al inicio".</p>
+          </div>
+
+          <!-- Share Result Card -->
+          <div class="glass-card p-5 rounded-2xl space-y-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-share-nodes"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">Compartir Racha de Entrenamiento</h3>
+                <p class="text-[11px] text-slate-400">Desafía a tus amigos a superar tu nivel.</p>
+              </div>
+            </div>
+            <button onclick="shareProgress()" class="w-full py-3 bg-purple-600 hover:bg-purple-500 active:scale-95 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-purple-600/30">
+              Copiar / Compartir Logro
+            </button>
+          </div>
+
+          <!-- Backup / Restore -->
+          <div class="glass-card p-5 rounded-2xl space-y-3">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Copia de Seguridad de Datos</h3>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="exportData()" class="py-2.5 glass-btn hover:bg-white/10 text-slate-200 text-xs font-semibold rounded-xl transition">
+                <i class="fa-solid fa-download mr-1"></i> Exportar
+              </button>
+              <button onclick="importData()" class="py-2.5 glass-btn hover:bg-white/10 text-slate-200 text-xs font-semibold rounded-xl transition">
+                <i class="fa-solid fa-upload mr-1"></i> Importar
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+      } else {
+        alert('Para instalar:\n- Android (Chrome): Toca los 3 puntos y "Agregar a pantalla principal".\n- iPhone (Safari): Toca el botón Compartir y "Agregar al inicio".');
+      }
+    }
+
+    function shareProgress() {
+      const text = `🧠 ¡Llevo una racha de ${state.streak} días entrenando mi mente en MIND! Nivel actual: ${state.level}. ¿Puedes superarme?`;
+      if (navigator.share) {
+        navigator.share({ title: 'MIND Trainer', text: text, url: window.location.href }).catch(() => {});
+      } else {
+        copyToClipboard(text);
+        alert('¡Texto de logro copiado al portapapeles!');
+      }
+    }
+
+    function copyToClipboard(text) {
+      const input = document.createElement('textarea');
+      input.value = text;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `mind_backup_${state.dailySeed}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importData() {
+      const str = prompt('Pega el contenido JSON de tu copia de seguridad:');
+      if (str) {
+        try {
+          const parsed = JSON.parse(str);
+          if (parsed.stats && parsed.streak !== undefined) {
+            state = parsed;
+            saveState();
+            alert('¡Datos cargados exitosamente!');
+            router.navigate('home');
+          }
+        } catch(e) {
+          alert('Error al importar archivo JSON.');
+        }
+      }
+    }
+
+    /* ==========================================================================
+       VIEW: GAME CONTAINER
+       ========================================================================== */
+    function renderGameContainer(container, skillId, isDaily) {
+      const skill = ALL_SKILLS.find(s => s.id === skillId);
+
+      container.innerHTML = `
+        <div class="flex-1 flex flex-col justify-between py-1">
+          <!-- Game Header -->
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+            <div>
+              <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block">${isDaily ? 'Rutina Diaria' : 'Práctica Libre'}</span>
+              <h3 class="text-base font-bold text-white flex items-center space-x-2">
+                <i class="fa-solid ${skill.icon} ${skill.color} text-sm"></i>
+                <span>${skill.name}</span>
+              </h3>
+            </div>
+            <div id="game-timer-badge" class="glass-card border border-indigo-500/30 px-3.5 py-1 rounded-full font-mono text-xs text-indigo-300 font-extrabold shadow-lg">
+              30s
+            </div>
+          </div>
+
+          <!-- Game Interactive Stage -->
+          <div id="game-stage" class="flex-1 my-3 flex flex-col justify-center items-center relative min-h-[360px]">
+            <!-- Mini-game injected dynamically -->
+          </div>
+        </div>
+      `;
+
+      // Game Routing
+      switch (skillId) {
+        case 'coordination': router.activeGame = new CoordinationGame(isDaily); break;
+        case 'logic': router.activeGame = new LogicGame(isDaily); break;
+        case 'arithmetic': router.activeGame = new ArithmeticGame(isDaily); break;
+        case 'language': router.activeGame = new LanguageGame(isDaily); break;
+        case 'memory': router.activeGame = new MemoryGame(isDaily); break;
+        case 'divided_attention': router.activeGame = new DividedAttentionGame(isDaily); break;
+        case 'spatial': router.activeGame = new SpatialGame(isDaily); break;
+        case 'stroop': router.activeGame = new StroopGame(isDaily); break;
+        case 'processing_speed': router.activeGame = new ProcessingSpeedGame(isDaily); break;
+        case 'working_memory': router.activeGame = new WorkingMemoryGame(isDaily); break;
+        case 'flexibility': router.activeGame = new CognitiveFlexibilityGame(isDaily); break;
+      }
+    }
+
+    // BASE CLASS FOR MINIGAMES
+    class BaseGame {
+      constructor(skillId, isDaily, duration = 30) {
+        this.skillId = skillId;
+        this.isDaily = isDaily;
+        this.score = 0;
+        this.totalRounds = 0;
+        this.correctRounds = 0;
+        this.timeLeft = duration;
+        this.timer = null;
+      }
+
+      startTimer() {
+        const badge = document.getElementById('game-timer-badge');
+        this.timer = setInterval(() => {
+          this.timeLeft--;
+          if (badge) badge.innerText = `${this.timeLeft}s`;
+          if (this.timeLeft <= 0) this.endGame();
+        }, 1000);
+      }
+
+      cleanup() {
+        if (this.timer) clearInterval(this.timer);
+      }
+
+      endGame() {
+        this.cleanup();
+        const accuracy = this.totalRounds > 0 ? (this.correctRounds / this.totalRounds) * 100 : 0;
+        
+        state.stats[this.skillId].score = Math.max(state.stats[this.skillId].score, this.score);
+        state.stats[this.skillId].played += 1;
+
+        if (this.isDaily) {
+          state.dailyProgress += 1;
+          if (state.dailyProgress >= 5) {
+            state.dailyCompletedToday = true;
+            state.lastCompletedDate = state.dailySeed;
+            state.streak += 1;
+            state.level += 1;
+          }
+        }
+        saveState();
+
+        showResultsModal(this.score, accuracy, () => {
+          router.navigate(this.isDaily ? 'home' : 'practice');
+        });
+      }
+    }
+
+    /* ==========================================================================
+       GAME 1: COORDINATION
+       ========================================================================== */
+    class CoordinationGame extends BaseGame {
+      constructor(isDaily) {
+        super('coordination', isDaily, 25);
+        this.colors = [
+          { name: 'Azul', value: 'bg-blue-500', hex: '#3b82f6' },
+          { name: 'Rojo', value: 'bg-rose-500', hex: '#f43f5e' },
+          { name: 'Verde', value: 'bg-emerald-500', hex: '#10b981' },
+          { name: 'Amarillo', value: 'bg-amber-400', hex: '#fbbf24' }
+        ];
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const target = this.colors[Math.floor(Math.random() * this.colors.length)];
+        let options = [...this.colors].sort(() => Math.random() - 0.5);
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Reacción Rápida</span>
+              <p class="text-sm font-bold text-white">Toca la figura de color: <span class="font-black underline" style="color:${target.hex}">${target.name}</span></p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 w-full max-w-xs my-auto">
+              ${options.map(opt => `
+                <button onclick="router.activeGame.tap('${opt.value}', '${target.value}')" class="h-28 rounded-3xl ${opt.value} shadow-xl active:scale-90 transition flex items-center justify-center border-2 border-white/20"></button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      tap(val, targetVal) {
+        this.totalRounds++;
+        if (val === targetVal) {
+          this.score += 10 + (state.level * 2);
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 2: LOGIC
+       ========================================================================== */
+    class LogicGame extends BaseGame {
+      constructor(isDaily) {
+        super('logic', isDaily, 30);
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const step = Math.floor(Math.random() * 4) + 1 + Math.floor(state.level / 2);
+        const start = Math.floor(Math.random() * 10) + 1;
+        const seq = [start, start + step, start + step * 2, '?'];
+        const correct = start + step * 3;
+
+        let options = Array.from(new Set([correct, correct + step, correct - step, correct + 3])).sort(() => Math.random() - 0.5);
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Secuencia Lógica</span>
+              <p class="text-sm font-bold text-white">¿Qué número completa el patrón?</p>
+            </div>
+            <div class="flex items-center space-x-2.5 my-auto">
+              ${seq.map(item => `
+                <div class="w-14 h-16 rounded-2xl ${item === '?' ? 'bg-indigo-600/30 border-2 border-dashed border-indigo-400 text-indigo-300' : 'glass-card text-white'} flex items-center justify-center font-black text-xl shadow-lg">
+                  ${item}
+                </div>
+              `).join('')}
+            </div>
+            <div class="grid grid-cols-2 gap-3 w-full max-w-xs mt-auto">
+              ${options.map(opt => `
+                <button onclick="router.activeGame.tap(${opt}, ${correct})" class="py-3.5 glass-btn hover:bg-white/10 rounded-2xl font-bold text-lg text-white active:scale-95 transition">
+                  ${opt}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      tap(val, correct) {
+        this.totalRounds++;
+        if (val === correct) {
+          this.score += 15;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 3: ARITHMETIC
+       ========================================================================== */
+    class ArithmeticGame extends BaseGame {
+      constructor(isDaily) {
+        super('arithmetic', isDaily, 25);
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const max = 10 + (state.level * 4);
+        const a = Math.floor(Math.random() * max) + 1;
+        const b = Math.floor(Math.random() * max) + 1;
+        const op = ['+', '-', '*'][Math.floor(Math.random() * (state.level > 2 ? 3 : 2))];
+
+        let ans = op === '+' ? a + b : op === '-' ? a - b : a * b;
+        let options = Array.from(new Set([ans, ans + 2, ans - 3, ans + 5])).sort(() => Math.random() - 0.5);
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Cálculo Rápido</span>
+              <p class="text-sm font-bold text-white">Resuelve mentalmente</p>
+            </div>
+            <div class="my-auto text-center">
+              <span class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">${a} ${op} ${b}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 w-full max-w-xs mt-auto">
+              ${options.map(opt => `
+                <button onclick="router.activeGame.tap(${opt}, ${ans})" class="py-3.5 glass-btn hover:bg-white/10 rounded-2xl font-black text-xl text-indigo-300 active:scale-95 transition">
+                  ${opt}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      tap(val, correct) {
+        this.totalRounds++;
+        if (val === correct) {
+          this.score += 10;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 4: LANGUAGE (ANAGRAMS)
+       ========================================================================== */
+    class LanguageGame extends BaseGame {
+      constructor(isDaily) {
+        super('language', isDaily, 30);
+        this.words = ['MENTE', 'LÓGICA', 'NIVEL', 'IDEAS', 'JUEGO', 'FACTOR', 'MEMORIA', 'SABER', 'PATRÓN', 'CIENCIA'];
+        this.startTimer();
+        this.nextRound();
+      }
+
+      scramble(word) {
+        let arr = word.split('');
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        const res = arr.join('');
+        return res === word ? this.scramble(word) : res;
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const target = this.words[Math.floor(Math.random() * this.words.length)];
+        const scrambled = this.scramble(target);
+
+        let options = [target];
+        while (options.length < 3) {
+          const r = this.words[Math.floor(Math.random() * this.words.length)];
+          if (!options.includes(r) && r.length === target.length) options.push(r);
+        }
+        options.sort(() => Math.random() - 0.5);
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Agilidad Léxica</span>
+              <p class="text-sm font-bold text-white">Ordena las letras</p>
+            </div>
+            <div class="my-auto flex space-x-2">
+              ${scrambled.split('').map(l => `
+                <div class="w-10 h-12 glass-card rounded-xl flex items-center justify-center font-black text-xl text-indigo-400 shadow-md border border-indigo-500/30">${l}</div>
+              `).join('')}
+            </div>
+            <div class="space-y-2.5 w-full max-w-xs mt-auto">
+              ${options.map(opt => `
+                <button onclick="router.activeGame.tap('${opt}', '${target}')" class="w-full py-3 glass-btn hover:bg-white/10 rounded-2xl font-bold text-base text-white active:scale-95 transition">
+                  ${opt}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      tap(val, correct) {
+        this.totalRounds++;
+        if (val === correct) {
+          this.score += 15;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 5: MEMORY VISUAL (SIMON)
+       ========================================================================== */
+    class MemoryGame extends BaseGame {
+      constructor(isDaily) {
+        super('memory', isDaily, 40);
+        this.sequence = [];
+        this.userSeq = [];
+        this.isShowing = false;
+        this.startTimer();
+        this.render();
+        setTimeout(() => this.nextRound(), 600);
+      }
+
+      render() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Memoria Visual</span>
+              <p id="mem-instr" class="text-sm font-bold text-white">Observa el patrón</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 w-full max-w-xs my-auto">
+              <button id="pad-0" onclick="router.activeGame.tap(0)" class="h-28 rounded-3xl bg-emerald-500/20 border-2 border-emerald-500/40 active:scale-95 transition"></button>
+              <button id="pad-1" onclick="router.activeGame.tap(1)" class="h-28 rounded-3xl bg-rose-500/20 border-2 border-rose-500/40 active:scale-95 transition"></button>
+              <button id="pad-2" onclick="router.activeGame.tap(2)" class="h-28 rounded-3xl bg-amber-500/20 border-2 border-amber-500/40 active:scale-95 transition"></button>
+              <button id="pad-3" onclick="router.activeGame.tap(3)" class="h-28 rounded-3xl bg-sky-500/20 border-2 border-sky-500/40 active:scale-95 transition"></button>
+            </div>
+          </div>
+        `;
+      }
+
+      nextRound() {
+        this.userSeq = [];
+        this.sequence.push(Math.floor(Math.random() * 4));
+        this.playSeq();
+      }
+
+      playSeq() {
+        this.isShowing = true;
+        const instr = document.getElementById('mem-instr');
+        if (instr) instr.innerText = 'Memorizando...';
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i >= this.sequence.length) {
+            clearInterval(interval);
+            this.isShowing = false;
+            if (instr) instr.innerText = '¡Repite la secuencia!';
+            return;
+          }
+          this.flash(this.sequence[i]);
+          i++;
+        }, 600);
+      }
+
+      flash(idx) {
+        const pad = document.getElementById(`pad-${idx}`);
+        if (!pad) return;
+        const colors = ['bg-emerald-400', 'bg-rose-400', 'bg-amber-400', 'bg-sky-400'];
+        pad.classList.add(colors[idx], 'scale-105');
+        setTimeout(() => pad.classList.remove(colors[idx], 'scale-105'), 350);
+      }
+
+      tap(idx) {
+        if (this.isShowing) return;
+        this.flash(idx);
+        this.userSeq.push(idx);
+
+        const curr = this.userSeq.length - 1;
+        if (this.userSeq[curr] !== this.sequence[curr]) {
+          this.endGame();
+          return;
+        }
+
+        if (this.userSeq.length === this.sequence.length) {
+          this.score += 20;
+          this.correctRounds++;
+          this.totalRounds++;
+          setTimeout(() => this.nextRound(), 700);
+        }
+      }
+    }
+
+    /* ==========================================================================
+       GAME 6: DIVIDED ATTENTION (MULTITASKING)
+       ========================================================================== */
+    class DividedAttentionGame extends BaseGame {
+      constructor(isDaily) {
+        super('divided_attention', isDaily, 25);
+        this.balancePos = 50; // 0 to 100
+        this.balanceInterval = null;
+        this.startTimer();
+        this.startBalanceLoop();
+        this.nextQuestion();
+      }
+
+      startBalanceLoop() {
+        this.balanceInterval = setInterval(() => {
+          // Drift balance indicator
+          const drift = (Math.random() - 0.5) * 6;
+          this.balancePos = Math.max(5, Math.min(95, this.balancePos + drift));
+          
+          const pointer = document.getElementById('balance-pointer');
+          if (pointer) pointer.style.left = `${this.balancePos}%`;
+
+          // Penalty if balance strays off limits
+          if (this.balancePos < 20 || this.balancePos > 80) {
+            this.score = Math.max(0, this.score - 1);
+          }
+        }, 100);
+      }
+
+      nextQuestion() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const a = Math.floor(Math.random() * 8) + 1;
+        const b = Math.floor(Math.random() * 8) + 1;
+        const isEven = (a + b) % 2 === 0;
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-1">
+            <!-- Balance bar -->
+            <div class="glass-card p-3 rounded-2xl w-full border border-slate-800 space-y-1">
+              <div class="flex justify-between text-[10px] font-bold text-slate-400">
+                <span>Mantén centrado con los botones izq/der</span>
+                <span>Atención</span>
+              </div>
+              <div class="w-full h-4 bg-slate-900 rounded-full relative overflow-hidden border border-slate-700">
+                <div class="absolute top-0 bottom-0 left-1/4 right-1/4 bg-indigo-500/20"></div>
+                <div id="balance-pointer" class="absolute top-0 bottom-0 w-3 bg-pink-500 rounded-full transition-all duration-75 -ml-1.5" style="left:${this.balancePos}%"></div>
+              </div>
+            </div>
+
+            <!-- Question -->
+            <div class="my-auto text-center space-y-2">
+              <span class="text-xs text-slate-400 uppercase font-extrabold">¿La suma es PAR o IMPAR?</span>
+              <div class="text-4xl font-black text-white">${a} + ${b}</div>
+            </div>
+
+            <!-- Controls -->
+            <div class="w-full space-y-3 mt-auto">
+              <!-- Nudge balance -->
+              <div class="flex space-x-2">
+                <button onclick="router.activeGame.nudge(-15)" class="flex-1 py-2 bg-slate-800 text-xs font-bold rounded-xl active:scale-95"><i class="fa-solid fa-arrow-left"></i> Nudge Izq</button>
+                <button onclick="router.activeGame.nudge(15)" class="flex-1 py-2 bg-slate-800 text-xs font-bold rounded-xl active:scale-95">Nudge Der <i class="fa-solid fa-arrow-right"></i></button>
+              </div>
+              <!-- Answers -->
+              <div class="grid grid-cols-2 gap-3">
+                <button onclick="router.activeGame.answer(true, ${isEven})" class="py-3.5 bg-indigo-600 font-bold rounded-2xl text-white active:scale-95">PAR</button>
+                <button onclick="router.activeGame.answer(false, ${isEven})" class="py-3.5 bg-purple-600 font-bold rounded-2xl text-white active:scale-95">IMPAR</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      nudge(val) {
+        this.balancePos = Math.max(5, Math.min(95, this.balancePos + val));
+      }
+
+      answer(userChoice, isEven) {
+        this.totalRounds++;
+        if (userChoice === isEven) {
+          this.score += 15;
+          this.correctRounds++;
+        }
+        this.nextQuestion();
+      }
+
+      cleanup() {
+        super.cleanup();
+        if (this.balanceInterval) clearInterval(this.balanceInterval);
+      }
+    }
+
+    /* ==========================================================================
+       GAME 7: SPATIAL PERCEPTION
+       ========================================================================== */
+    class SpatialGame extends BaseGame {
+      constructor(isDaily) {
+        super('spatial', isDaily, 25);
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const count = Math.floor(Math.random() * 6) + 4;
+        let options = Array.from(new Set([count, count + 1, count - 1, count + 2])).sort(() => Math.random() - 0.5);
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Percepción Espacial</span>
+              <p class="text-sm font-bold text-white">¿Cuántos bloques 3D forman la pila?</p>
+            </div>
+
+            <!-- Simulated 3D Blocks Grid -->
+            <div class="my-auto grid grid-cols-3 gap-2 p-4 glass-card rounded-3xl transform rotate-12 -skew-x-12">
+              ${Array.from({length: count}).map((_, i) => `
+                <div class="w-12 h-12 bg-gradient-to-tr from-cyan-600 to-blue-500 rounded-xl shadow-lg border-t-2 border-l-2 border-white/40 flex items-center justify-center font-bold text-white text-xs">
+                  ${i + 1}
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 w-full max-w-xs mt-auto">
+              ${options.map(opt => `
+                <button onclick="router.activeGame.tap(${opt}, ${count})" class="py-3.5 glass-btn hover:bg-white/10 rounded-2xl font-bold text-xl text-cyan-300 active:scale-95 transition">
+                  ${opt} Bloques
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      tap(val, correct) {
+        this.totalRounds++;
+        if (val === correct) {
+          this.score += 15;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 8: STROOP / INHIBITION
+       ========================================================================== */
+    class StroopGame extends BaseGame {
+      constructor(isDaily) {
+        super('stroop', isDaily, 25);
+        this.colors = [
+          { name: 'ROJO', hex: '#f43f5e', key: 'rojo' },
+          { name: 'AZUL', hex: '#3b82f6', key: 'azul' },
+          { name: 'VERDE', hex: '#10b981', key: 'verde' },
+          { name: 'AMARILLO', hex: '#fbbf24', key: 'amarillo' }
+        ];
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const textObj = this.colors[Math.floor(Math.random() * this.colors.length)];
+        const colorObj = this.colors[Math.floor(Math.random() * this.colors.length)];
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Inhibición de Impulsos</span>
+              <p class="text-sm font-bold text-white">Toca el botón del <span class="underline">COLOR DE LA TINTA</span>, ignora la palabra.</p>
+            </div>
+
+            <div class="my-auto">
+              <span class="text-5xl font-black tracking-widest" style="color: ${colorObj.hex}">${textObj.name}</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 w-full max-w-xs mt-auto">
+              ${this.colors.map(c => `
+                <button onclick="router.activeGame.tap('${c.key}', '${colorObj.key}')" class="py-3.5 glass-btn hover:bg-white/10 rounded-2xl font-bold text-sm text-white active:scale-95 transition flex items-center justify-center space-x-2">
+                  <span class="w-3 h-3 rounded-full" style="background:${c.hex}"></span>
+                  <span>${c.name}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      tap(val, correct) {
+        this.totalRounds++;
+        if (val === correct) {
+          this.score += 10;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 9: PROCESSING SPEED
+       ========================================================================== */
+    class ProcessingSpeedGame extends BaseGame {
+      constructor(isDaily) {
+        super('processing_speed', isDaily, 25);
+        this.icons = ['fa-star', 'fa-heart', 'fa-bolt', 'fa-moon', 'fa-bell', 'fa-gem'];
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        const targetIcon = this.icons[Math.floor(Math.random() * this.icons.length)];
+        let gridIcons = [targetIcon, targetIcon]; // Guaranteed duplicate
+        while (gridIcons.length < 6) {
+          const rand = this.icons[Math.floor(Math.random() * this.icons.length)];
+          if (gridIcons.filter(x => x === rand).length < 1) gridIcons.push(rand);
+        }
+        gridIcons.sort(() => Math.random() - 0.5);
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Velocidad de Procesamiento</span>
+              <p class="text-sm font-bold text-white">¿Cuál es el único ícono que se REPITE?</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 my-auto p-4 glass-card rounded-3xl">
+              ${gridIcons.map(icon => `
+                <div class="w-14 h-14 rounded-2xl bg-slate-800/80 flex items-center justify-center text-2xl text-amber-400 shadow-md">
+                  <i class="fa-solid ${icon}"></i>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 w-full max-w-xs mt-auto">
+              ${this.icons.map(icon => `
+                <button onclick="router.activeGame.tap('${icon}', '${targetIcon}')" class="py-3 glass-btn hover:bg-white/10 rounded-2xl text-xl text-slate-200 active:scale-95 transition">
+                  <i class="fa-solid ${icon}"></i>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      tap(val, correct) {
+        this.totalRounds++;
+        if (val === correct) {
+          this.score += 15;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 10: WORKING MEMORY
+       ========================================================================== */
+    class WorkingMemoryGame extends BaseGame {
+      constructor(isDaily) {
+        super('working_memory', isDaily, 35);
+        this.numbers = [];
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        // Generate 4 numbers
+        this.numbers = Array.from({length: 4}, () => Math.floor(Math.random() * 9) + 1);
+        const reversed = [...this.numbers].reverse().join('');
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <div class="glass-card p-3.5 rounded-2xl w-full text-center border border-slate-800">
+              <span class="text-[10px] text-slate-400 uppercase font-extrabold block">Memoria de Trabajo</span>
+              <p id="wm-instr" class="text-sm font-bold text-white">Memoriza los números...</p>
+            </div>
+
+            <div class="my-auto flex space-x-3" id="wm-numbers-box">
+              ${this.numbers.map(n => `
+                <div class="w-12 h-16 glass-card rounded-2xl flex items-center justify-center text-2xl font-black text-fuchsia-400 shadow-xl border border-fuchsia-500/30">${n}</div>
+              `).join('')}
+            </div>
+
+            <div id="wm-input-box" class="w-full space-y-3 mt-auto hidden">
+              <input type="number" id="wm-input" placeholder="Ingresa en orden INVERSO" class="w-full py-3.5 px-4 bg-slate-900 border border-slate-700 rounded-2xl text-center text-xl font-bold text-white focus:outline-none focus:border-fuchsia-500" />
+              <button onclick="router.activeGame.checkAnswer('${reversed}')" class="w-full py-3.5 bg-fuchsia-600 text-white font-bold rounded-2xl active:scale-95">Confirmar Respuesta</button>
+            </div>
+          </div>
+        `;
+
+        // Hide numbers after 2.5 seconds
+        setTimeout(() => {
+          const numBox = document.getElementById('wm-numbers-box');
+          const inputBox = document.getElementById('wm-input-box');
+          const instr = document.getElementById('wm-instr');
+          if (numBox) numBox.classList.add('hidden');
+          if (inputBox) inputBox.classList.remove('hidden');
+          if (instr) instr.innerText = 'Escribe los números en ORDEN INVERSO';
+        }, 2200);
+      }
+
+      checkAnswer(correctReversed) {
+        const input = document.getElementById('wm-input');
+        if (!input) return;
+
+        this.totalRounds++;
+        if (input.value.trim() === correctReversed) {
+          this.score += 20;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       GAME 11: COGNITIVE FLEXIBILITY (SWITCHING)
+       ========================================================================== */
+    class CognitiveFlexibilityGame extends BaseGame {
+      constructor(isDaily) {
+        super('flexibility', isDaily, 30);
+        this.startTimer();
+        this.nextRound();
+      }
+
+      nextRound() {
+        const stage = document.getElementById('game-stage');
+        if (!stage) return;
+
+        // Rule switching: Rule A (Par/Impar) or Rule B (Mayor/Menor a 5)
+        const isRuleA = Math.random() > 0.5;
+        const number = Math.floor(Math.random() * 9) + 1;
+
+        let isCorrectChoiceLeft = false;
+
+        if (isRuleA) {
+          // Rule A: PAR (Left), IMPAR (Right)
+          isCorrectChoiceLeft = number % 2 === 0;
+        } else {
+          // Rule B: MAYOR A 5 (Left), MENOR O IGUAL 5 (Right)
+          isCorrectChoiceLeft = number > 5;
+        }
+
+        stage.innerHTML = `
+          <div class="w-full flex flex-col items-center justify-between h-full py-2">
+            <!-- Rule Card changing background -->
+            <div class="${isRuleA ? 'bg-teal-600/30 border-teal-500/50' : 'bg-purple-600/30 border-purple-500/50'} glass-card p-4 rounded-3xl w-full text-center border transition-all duration-300">
+              <span class="text-[10px] uppercase font-black text-slate-300 block">REGLA ACTUAL:</span>
+              <p class="text-base font-black text-white">${isRuleA ? '¿El número es PAR o IMPAR?' : '¿El número es MAYOR o MENOR a 5?'}</p>
+            </div>
+
+            <div class="my-auto">
+              <span class="text-6xl font-black text-white">${number}</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 w-full max-w-xs mt-auto">
+              <button onclick="router.activeGame.tap(true, ${isCorrectChoiceLeft})" class="py-4 bg-teal-600 font-bold text-white rounded-2xl active:scale-95 transition">
+                ${isRuleA ? 'PAR' : '> 5'}
+              </button>
+              <button onclick="router.activeGame.tap(false, ${isCorrectChoiceLeft})" class="py-4 bg-purple-600 font-bold text-white rounded-2xl active:scale-95 transition">
+                ${isRuleA ? 'IMPAR' : '≤ 5'}
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      tap(userLeftChoice, isCorrectLeftChoice) {
+        this.totalRounds++;
+        if (userLeftChoice === isCorrectLeftChoice) {
+          this.score += 15;
+          this.correctRounds++;
+        }
+        this.nextRound();
+      }
+    }
+
+    /* ==========================================================================
+       INITIALIZATION
+       ========================================================================== */
+    window.onload = function() {
+      checkDailyReset();
+      updateHeaderBadges();
+      router.navigate('home');
+    };
+  </script>
+</body>
+</html>
